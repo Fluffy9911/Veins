@@ -126,7 +126,7 @@ public class VeinsRegistry {
 	public static OreVeinConfig CONFIG = ModConfig.ORE_VEIN_CONFIG;
 
 	@SubscribeEvent
-	public static void onBiomeLoading(BiomeLoadingEvent event) {
+	public static void onBiomeLoading(BiomeLoadingEvent event) { 
 		// Check if the biome category is underground
 		if (event.getCategory() == Biome.BiomeCategory.UNDERGROUND) {
 			// Check each ore vein generation setting from the config before adding to the
