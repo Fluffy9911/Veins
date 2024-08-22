@@ -36,7 +36,7 @@ public class OreFeature extends Feature<OreFeature.Configuration> {
 	@Override
 	public boolean place(FeaturePlaceContext<OreFeature.Configuration> context) {
 		WorldGenLevel level = context.level();
-		Random random = context.random();
+		Random random = new Random();
 		BlockPos pos = context.origin();
 		Configuration config = context.config();
 

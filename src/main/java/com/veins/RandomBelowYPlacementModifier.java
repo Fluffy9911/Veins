@@ -3,6 +3,7 @@ package com.veins;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
@@ -39,7 +40,7 @@ public class RandomBelowYPlacementModifier extends PlacementModifier {
 	}
 
 	@Override
-	public Stream<BlockPos> getPositions(PlacementContext context, Random random, BlockPos pos) {
+	public Stream<BlockPos> getPositions(PlacementContext context, RandomSource random, BlockPos pos) {
 		// Check if the position is below the specified Y-level
 
 		if (pos.getY() < yLevel) {
@@ -63,4 +64,6 @@ public class RandomBelowYPlacementModifier extends PlacementModifier {
 			}
 		};
 	}
+
+	
 }

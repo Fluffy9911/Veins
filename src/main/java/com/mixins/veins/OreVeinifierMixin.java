@@ -12,7 +12,7 @@ import net.minecraft.world.level.levelgen.DensityFunction.FunctionContext;
 import net.minecraft.world.level.levelgen.NoiseChunk;
 import net.minecraft.world.level.levelgen.OreVeinifier;
 import net.minecraft.world.level.levelgen.PositionalRandomFactory;
-import net.minecraft.world.level.levelgen.RandomSource;
+
 
 @Mixin(OreVeinifier.class)
 public class OreVeinifierMixin {

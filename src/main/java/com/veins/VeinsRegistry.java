@@ -18,14 +18,13 @@ import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.registries.RegisterEvent;
+
+
+
 
 @Mod.EventBusSubscriber(modid = "veins", bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class VeinsRegistry {
@@ -65,22 +64,15 @@ public class VeinsRegistry {
 	public static Holder<PlacedFeature> rpf;
 	public static Holder<PlacedFeature> epf;
 
-	public static void register(IEventBus bus) {
-		// Add registration logic if needed
-	}
+	
 
-	public static <T extends IForgeRegistryEntry<T>> void bind(IForgeRegistry<T> registry,
-			Consumer<BiConsumer<T, ResourceLocation>> source) {
-		FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(registry.getRegistrySuperType(),
-				(RegistryEvent.Register<T> event) -> {
-					IForgeRegistry<T> forgeRegistry = event.getRegistry();
-					source.accept((t, rl) -> {
-						t.setRegistryName(rl);
-						forgeRegistry.register(t);
-					});
-				});
+	public static <T> void bind(ResourceKey<Registry<T>> registry, Consumer<BiConsumer<T, ResourceLocation>> source) {
+		FMLJavaModLoadingContext.get().getModEventBus().addListener((RegisterEvent event) -> {
+			if (registry.equals(event.getRegistryKey())) {
+				source.accept((t, rl) -> event.register(registry, rl, () -> t));
+			}
+		});
 	}
-
 	public static void registerFeatures(BiConsumer<Feature<?>, ResourceLocation> r) {
 		copper = registerFeature(r, VeinType.COPPER, COPPER_VEIN, 5, 50, 512, 60, 0.01);
 		iron = registerFeature(r, VeinType.IRON, IRON_VEIN, 5, 50, 256, 60, 0.01);
@@ -125,44 +117,44 @@ public class VeinsRegistry {
 
 	public static OreVeinConfig CONFIG = ModConfig.ORE_VEIN_CONFIG;
 
-	@SubscribeEvent
-	public static void onBiomeLoading(BiomeLoadingEvent event) {
-		// Check if the biome category is underground
-		if (event.getCategory() == Biome.BiomeCategory.UNDERGROUND) {
-			// Check each ore vein generation setting from the config before adding to the
-			// biome
-
-			if (CONFIG.generateCopper.get()) {
-				event.getGeneration().addFeature(Decoration.UNDERGROUND_ORES, cpf);
-			}
-
-			if (CONFIG.generateIron.get()) {
-				event.getGeneration().addFeature(Decoration.UNDERGROUND_ORES, ipf);
-			}
-
-			if (CONFIG.generateGold.get()) {
-				event.getGeneration().addFeature(Decoration.UNDERGROUND_ORES, gpf);
-			}
-
-			if (CONFIG.generateDiamond.get()) {
-				event.getGeneration().addFeature(Decoration.UNDERGROUND_ORES, dpf);
-			}
-
-			if (CONFIG.generateCoal.get()) {
-				event.getGeneration().addFeature(Decoration.UNDERGROUND_ORES, cpfCoal);
-			}
-
-			if (CONFIG.generateLapis.get()) {
-				event.getGeneration().addFeature(Decoration.UNDERGROUND_ORES, lpf);
-			}
-
-			if (CONFIG.generateRedstone.get()) {
-				event.getGeneration().addFeature(Decoration.UNDERGROUND_ORES, rpf);
-			}
-
-			if (CONFIG.generateEmerald.get()) {
-				event.getGeneration().addFeature(Decoration.UNDERGROUND_ORES, epf);
-			}
-		}
-	}
+//	@SubscribeEvent
+//	public static void onBiomeLoading(BiomeLoadingEvent event) {
+//		// Check if the biome category is underground
+//		if (event.getCategory() == Biome.BiomeCategory.UNDERGROUND) {
+//			// Check each ore vein generation setting from the config before adding to the
+//			// biome
+//
+//			if (CONFIG.generateCopper.get()) {
+//				event.getGeneration().addFeature(Decoration.UNDERGROUND_ORES, cpf);
+//			}
+//
+//			if (CONFIG.generateIron.get()) {
+//				event.getGeneration().addFeature(Decoration.UNDERGROUND_ORES, ipf);
+//			}
+//
+//			if (CONFIG.generateGold.get()) {
+//				event.getGeneration().addFeature(Decoration.UNDERGROUND_ORES, gpf);
+//			}
+//
+//			if (CONFIG.generateDiamond.get()) {
+//				event.getGeneration().addFeature(Decoration.UNDERGROUND_ORES, dpf);
+//			}
+//
+//			if (CONFIG.generateCoal.get()) {
+//				event.getGeneration().addFeature(Decoration.UNDERGROUND_ORES, cpfCoal);
+//			}
+//
+//			if (CONFIG.generateLapis.get()) {
+//				event.getGeneration().addFeature(Decoration.UNDERGROUND_ORES, lpf);
+//			}
+//
+//			if (CONFIG.generateRedstone.get()) {
+//				event.getGeneration().addFeature(Decoration.UNDERGROUND_ORES, rpf);
+//			}
+//
+//			if (CONFIG.generateEmerald.get()) {
+//				event.getGeneration().addFeature(Decoration.UNDERGROUND_ORES, epf);
+//			}
+		
+	//}
 }
