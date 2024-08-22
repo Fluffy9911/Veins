@@ -1,0 +1,12 @@
+{
+	"required": true,
+	"package": "com.mixins.veins",
+	"compatibilityLevel": "JAVA_17",
+	"refmap": "veins.refmap.json",
+	"mixins": [
+	"OreVeinifierMixin"
+	],
+	"client": [
+	],
+	"minVersion": "0.8"
+}
