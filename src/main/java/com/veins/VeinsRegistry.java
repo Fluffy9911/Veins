@@ -10,6 +10,7 @@ import com.veins.features.OreFeature.Configuration;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
@@ -119,23 +120,23 @@ public class VeinsRegistry {
 	        );
 	    }
 	// Helper method to register a feature and its placement
-	private static Holder<ConfiguredFeature<Configuration, ?>> registerFeature(
-			BiConsumer<Feature<?>, ResourceLocation> r, VeinType veinType, ResourceKey<PlacedFeature> resourceKey,
+	private static Holder<ConfiguredFeature<Configuration, ?>> registerFeature(BootstapContext<ConfiguredFeature<?,?>> pf,
+			BiConsumer<Feature<?>, ResourceLocation> r, VeinType veinType, ResourceKey<ConfiguredFeature<?, ?>> resourceKey,
 			int minBranch, int maxBranch, int veinSize, int maxY, double chance) {
 
 		var feature = new OreFeature(OreFeature.Configuration.CODEC, minBranch, maxBranch, 0, chance);
 		var config = new OreFeature.Configuration(veinType, veinSize);
 
 		r.accept(feature, resourceKey.location());
-
-		return FeatureUtils.register(resourceKey.location().toString(), feature, config);
+FeatureUtils.register(pf, resourceKey, null);
+	
 	}
 
 	// Helper method to register a placed feature
-	private static Holder<PlacedFeature> registerPlacedFeature(ResourceKey<PlacedFeature> resourceKey,
+	private static Holder<PlacedFeature> registerPlacedFeature(BootstapContext<PlacedFeature> bst,ResourceKey<PlacedFeature> resourceKey,
 			Holder<ConfiguredFeature<Configuration, ?>> configuredFeature, int maxY, double chance,VeinType type) {
 
-		return PlacementUtils.register(resourceKey.location().toString(), configuredFeature,
+		return PlacementUtils.register(bst,resourceKey, configuredFeature,
 				new RandomBelowYPlacementModifier(type.maxY, ModConfig.getOrDef(chance, type)), PlacementUtils.FULL_RANGE);
 	}
 

@@ -15,6 +15,8 @@ import net.minecraft.core.HolderSet.Direct;
 import net.minecraft.core.IdMap;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
@@ -98,7 +100,7 @@ IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
 		VeinsRegistry.PLACEMENT_MODIFIERS.register(bus);	
 		
-	VeinsRegistry.bind(Registry.FEATURE_REGISTRY, VeinsRegistry::registerFeatures);
+	VeinsRegistry.bind(Registries.FEATURE, VeinsRegistry::registerFeatures);
 		MinecraftForge.EVENT_BUS.register(this);
 		CONFIG = ModConfig.ORE_VEIN_CONFIG;
 FeatureBuilders.BIOME_MODIFIER_SERIALIZERS.register(bus);
@@ -200,26 +202,7 @@ FMLJavaModLoadingContext.get().getModEventBus().addListener(this::gather);
 		return false;
 	}
 	public  void gather(GatherDataEvent event) {
-
-		DataGenerator generator = event.getGenerator();
-		  ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-		  RegistryAccess access = RegistryAccess.builtinCopy();
-			Registry<Biome> br = access.registryOrThrow(Registry.BIOME_REGISTRY);
-			Registry<PlacedFeature> pf = access.registryOrThrow(Registry.PLACED_FEATURE_REGISTRY);
+RegistrySetBuilder rsb = new RegistrySetBuilder();
 		
-
-Map<ResourceLocation, BiomeModifier> map = Map.of(new ResourceLocation("veins", "veins_biome_mod"),new Modifier());
-
-		  System.out.println("gen data");
-		  JsonCodecProvider provider = JsonCodecProvider.forDatapackRegistry(
-				    generator, existingFileHelper, "veins", RegistryOps.create(JsonOps.INSTANCE, access), ForgeRegistries.Keys.BIOME_MODIFIERS, map);
-		 
-		  generator.addProvider(event.includeServer(), provider);
-		  try {
-			event.getGenerator().run();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 }
