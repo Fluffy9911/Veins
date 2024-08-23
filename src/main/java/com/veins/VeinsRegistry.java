@@ -1,5 +1,6 @@
 package com.veins;
 
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -18,10 +19,16 @@ import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
+import net.minecraftforge.common.world.ForgeBiomeModifiers;
+import net.minecraftforge.common.world.ForgeBiomeModifiers.AddFeaturesBiomeModifier;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
+import net.minecraftforge.registries.RegistryObject;
 
 
 
@@ -93,7 +100,24 @@ public class VeinsRegistry {
 		rpf = registerPlacedFeature(REDSTONE_VEIN, redstone, 16, 0.01);
 		epf = registerPlacedFeature(EMERALD_VEIN, emerald, 30, 0.01);
 	}
+	public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIERS =
+            DeferredRegister.create(Registry.PLACEMENT_MODIFIER_REGISTRY, "veins");
 
+    public static final RegistryObject<PlacementModifierType<RandomBelowYPlacementModifier>> RANDOM_BELOW_Y =
+            PLACEMENT_MODIFIERS.register("random_below_y", 
+                    () -> () -> RandomBelowYPlacementModifier.CODEC);
+	 public static Map<ResourceLocation, PlacedFeature> createFeatureMap() {
+	        return Map.of(
+	            COPPER_VEIN.location(), cpf.get(),
+	            IRON_VEIN.location(), ipf.get(),
+	            GOLD_VEIN.location(), gpf.get(),
+	            DIAMOND_VEIN.location(), dpf.get(),
+	            COAL_VEIN.location(), cpfCoal.get(),
+	            LAPIS_VEIN.location(), lpf.get(),
+	            REDSTONE_VEIN.location(), rpf.get(),
+	            EMERALD_VEIN.location(), epf.get()
+	        );
+	    }
 	// Helper method to register a feature and its placement
 	private static Holder<ConfiguredFeature<Configuration, ?>> registerFeature(
 			BiConsumer<Feature<?>, ResourceLocation> r, VeinType veinType, ResourceKey<PlacedFeature> resourceKey,

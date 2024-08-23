@@ -55,14 +55,7 @@ public class RandomBelowYPlacementModifier extends PlacementModifier {
 	@Override
 	public PlacementModifierType<?> type() {
 		// TODO Auto-generated method stub
-		return new PlacementModifierType<RandomBelowYPlacementModifier>() {
-
-			@Override
-			public Codec<RandomBelowYPlacementModifier> codec() {
-				// TODO Auto-generated method stub
-				return CODEC;
-			}
-		};
+		return VeinsRegistry.RANDOM_BELOW_Y.get();
 	}
 
 	

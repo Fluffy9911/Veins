@@ -1,25 +1,49 @@
 package com.veins;
 
 import com.electronwill.nightconfig.core.ConfigSpec;
+import com.google.gson.JsonElement;
 import com.mojang.logging.LogUtils;
+import com.mojang.serialization.JsonOps;
+import com.veins.ModConfig.OreVeinConfig;
+import com.veins.features.FeatureBuilders;
+import com.veins.features.Modifier;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.HolderSet.Direct;
+import net.minecraft.core.IdMap;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biome.BiomeBuilder;
+import net.minecraft.world.level.biome.BiomeGenerationSettings;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.NoiseChunk;
 import net.minecraft.world.level.levelgen.PositionalRandomFactory;
-
+import net.minecraft.world.level.levelgen.WorldGenSettings;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.NoiseChunk.BlockStateFiller;
+import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
-
+import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.common.data.JsonCodecProvider;
+import net.minecraftforge.common.world.BiomeModifier;
+import net.minecraftforge.common.world.ForgeBiomeModifiers.AddFeaturesBiomeModifier;
+import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.common.world.ModifiableBiomeInfo;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
@@ -36,37 +60,54 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import org.slf4j.Logger;
 
+import static com.veins.VeinsRegistry.cpf;
+import static com.veins.VeinsRegistry.cpfCoal;
+import static com.veins.VeinsRegistry.dpf;
+import static com.veins.VeinsRegistry.epf;
+import static com.veins.VeinsRegistry.gpf;
+import static com.veins.VeinsRegistry.ipf;
+import static com.veins.VeinsRegistry.lpf;
+import static com.veins.VeinsRegistry.rpf;
+
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
-
+import static com.veins.VeinsRegistry.*;
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("veins")
 public class Veins {
 	public static String id = "veins";
 	// Directly reference a slf4j logger
 	private static final Logger LOGGER = LogUtils.getLogger();
+	public static OreVeinConfig CONFIG;
 
 	public Veins() {
+		
+IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+		ModConfig.buildConfig(bus);
+	
 		// Register the setup method for modloading
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 		// Register the enqueueIMC method for modloading
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
 		// Register the processIMC method for modloading
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
-		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-		ModConfig.buildConfig(bus);
+		VeinsRegistry.PLACEMENT_MODIFIERS.register(bus);	
 		ModLoadingContext.get().registerConfig(Type.COMMON, ModConfig.SPEC);
-		// Register ourselves for server and other game events we are interested in
+	VeinsRegistry.bind(Registry.FEATURE_REGISTRY, VeinsRegistry::registerFeatures);
 		MinecraftForge.EVENT_BUS.register(this);
-
-		VeinsRegistry.bind(Registry.FEATURE_REGISTRY, VeinsRegistry::registerFeatures);
-
+		CONFIG = ModConfig.ORE_VEIN_CONFIG;
+FeatureBuilders.BIOME_MODIFIER_SERIALIZERS.register(bus);
+FMLJavaModLoadingContext.get().getModEventBus().addListener(this::gather);
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {
-
+		
+	        
 	}
 
 	private void enqueueIMC(final InterModEnqueueEvent event) {
@@ -157,5 +198,28 @@ public class Veins {
 			return true;
 		}
 		return false;
+	}
+	public  void gather(GatherDataEvent event) {
+
+		DataGenerator generator = event.getGenerator();
+		  ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+		  RegistryAccess access = RegistryAccess.builtinCopy();
+			Registry<Biome> br = access.registryOrThrow(Registry.BIOME_REGISTRY);
+			Registry<PlacedFeature> pf = access.registryOrThrow(Registry.PLACED_FEATURE_REGISTRY);
+		
+
+Map<ResourceLocation, BiomeModifier> map = Map.of(new ResourceLocation("veins", "veins_biome_mod"),new Modifier());
+
+		  System.out.println("gen data");
+		  JsonCodecProvider provider = JsonCodecProvider.forDatapackRegistry(
+				    generator, existingFileHelper, "veins", RegistryOps.create(JsonOps.INSTANCE, access), ForgeRegistries.Keys.BIOME_MODIFIERS, map);
+		 
+		  generator.addProvider(event.includeServer(), provider);
+		  try {
+			event.getGenerator().run();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

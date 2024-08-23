@@ -5,6 +5,7 @@ import java.util.Random;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.veins.ModConfig;
 import com.veins.VeinType;
 import com.veins.Veins;
 
@@ -43,9 +44,14 @@ public class OreFeature extends Feature<OreFeature.Configuration> {
 		VeinType veinType = config.veinType;
 		int veinSize = config.veinSize;
 
-		Veins.createVein(veinType, veinSize, level, pos, random, random.nextDouble(bmin, bmax),
+		if(pos.getY() < veinType.maxY && pos.getY() > veinType.minY) {
+			Veins.createVein(veinType, veinSize, level, pos, random, random.nextDouble(bmin, bmax),
 				random.nextDouble(ddmin, ddmax));
+			if (ModConfig.ORE_VEIN_CONFIG.log.get())
 		LogUtils.getLogger().debug("Placed");
+		}
+		
+		
 		return true;
 	}
 
