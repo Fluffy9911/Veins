@@ -5,6 +5,7 @@ import java.util.Random;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.veins.ModConfig;
 import com.veins.VeinType;
 import com.veins.Veins;
 
@@ -36,16 +37,24 @@ public class OreFeature extends Feature<OreFeature.Configuration> {
 	@Override
 	public boolean place(FeaturePlaceContext<OreFeature.Configuration> context) {
 		WorldGenLevel level = context.level();
-		Random random = context.random();
+		Random random = new Random();
 		BlockPos pos = context.origin();
 		Configuration config = context.config();
 
 		VeinType veinType = config.veinType;
 		int veinSize = config.veinSize;
-
-		Veins.createVein(veinType, veinSize, level, pos, random, random.nextDouble(bmin, bmax),
+		int mx = ModConfig.vals.get(veinType).getA().get();
+		int mmx = ModConfig.vals.get(veinType).getB().get();
+		veinType.minY = mx;
+		veinType.maxY = mmx;
+		
+			Veins.createVein(veinType, veinSize, level, pos, random, random.nextDouble(bmin, bmax),
 				random.nextDouble(ddmin, ddmax));
+			if (ModConfig.ORE_VEIN_CONFIG.log.get())
 		LogUtils.getLogger().debug("Placed");
+		
+		
+		
 		return true;
 	}
 

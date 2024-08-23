@@ -134,7 +134,7 @@ public class Veins {
 			}
 		}
 		if (ModConfig.ORE_VEIN_CONFIG.log.get())
-			LogUtils.getLogger().debug("Block at {} cannot be replaced", pos);
+			LogUtils.getLogger().debug("Block at {} cannot be replaced, block at: {} is not one of: {}", pos,currentBlock,type.replace);
 		return false;
 	}
 

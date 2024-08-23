@@ -84,22 +84,22 @@ public class VeinsRegistry {
 	public static void registerFeatures(BiConsumer<Feature<?>, ResourceLocation> r) {
 		copper = registerFeature(r, VeinType.COPPER, COPPER_VEIN, 5, 50, 512, 60, 0.01);
 		iron = registerFeature(r, VeinType.IRON, IRON_VEIN, 5, 50, 256, 60, 0.01);
-		gold = registerFeature(r, VeinType.GOLD, GOLD_VEIN, 5, 50, 64, 60, 0.01);
-		diamond = registerFeature(r, VeinType.DIAMOND, DIAMOND_VEIN, 3, 30, 32, 16, 0.01);
-		coal = registerFeature(r, VeinType.COAL, COAL_VEIN, 10, 100, 128, 128, 0.01);
-		lapis = registerFeature(r, VeinType.LAPIS, LAPIS_VEIN, 2, 20, 32, 30, 0.01);
-		redstone = registerFeature(r, VeinType.REDSTONE, REDSTONE_VEIN, 4, 40, 32, 16, 0.01);
-		emerald = registerFeature(r, VeinType.EMERALD, EMERALD_VEIN, 1, 10, 16, 30, 0.01);
+		gold = registerFeature(r, VeinType.GOLD, GOLD_VEIN, 5, 50, 256, 60, 0.01);
+		diamond = registerFeature(r, VeinType.DIAMOND, DIAMOND_VEIN, 3, 30, 256, 16, 0.01);
+		coal = registerFeature(r, VeinType.COAL, COAL_VEIN, 10, 100, 256, 128, 0.01);
+		lapis = registerFeature(r, VeinType.LAPIS, LAPIS_VEIN, 2, 20, 256, 30, 0.01);
+		redstone = registerFeature(r, VeinType.REDSTONE, REDSTONE_VEIN, 4, 40, 256, 16, 0.01);
+		emerald = registerFeature(r, VeinType.EMERALD, EMERALD_VEIN, 1, 10, 256, 30, 0.01);
 
 		// Set Holder<PlacedFeature> variables
-		cpf = registerPlacedFeature(COPPER_VEIN, copper, 60, 0.01);
-		ipf = registerPlacedFeature(IRON_VEIN, iron, 60, 0.01);
-		gpf = registerPlacedFeature(GOLD_VEIN, gold, 60, 0.01);
-		dpf = registerPlacedFeature(DIAMOND_VEIN, diamond, 16, 0.01);
-		cpfCoal = registerPlacedFeature(COAL_VEIN, coal, 128, 0.01);
-		lpf = registerPlacedFeature(LAPIS_VEIN, lapis, 30, 0.01);
-		rpf = registerPlacedFeature(REDSTONE_VEIN, redstone, 16, 0.01);
-		epf = registerPlacedFeature(EMERALD_VEIN, emerald, 30, 0.01);
+		cpf = registerPlacedFeature(COPPER_VEIN, copper, 60, 0.01,VeinType.COPPER);
+		ipf = registerPlacedFeature(IRON_VEIN, iron, 60, 0.01,VeinType.IRON);
+		gpf = registerPlacedFeature(GOLD_VEIN, gold, 60, 0.01,VeinType.GOLD);
+		dpf = registerPlacedFeature(DIAMOND_VEIN, diamond, 16, 0.01,VeinType.DIAMOND);
+		cpfCoal = registerPlacedFeature(COAL_VEIN, coal, 128, 0.01,VeinType.COAL);
+		lpf = registerPlacedFeature(LAPIS_VEIN, lapis, 30, 0.01,VeinType.LAPIS);
+		rpf = registerPlacedFeature(REDSTONE_VEIN, redstone, 16, 0.01,VeinType.REDSTONE);
+		epf = registerPlacedFeature(EMERALD_VEIN, emerald, 30, 0.01,VeinType.EMERALD);
 	}
 
 	// Helper method to register a feature and its placement
@@ -117,10 +117,10 @@ public class VeinsRegistry {
 
 	// Helper method to register a placed feature
 	private static Holder<PlacedFeature> registerPlacedFeature(ResourceKey<PlacedFeature> resourceKey,
-			Holder<ConfiguredFeature<Configuration, ?>> configuredFeature, int maxY, double chance) {
+			Holder<ConfiguredFeature<Configuration, ?>> configuredFeature, int maxY, double chance,VeinType type) {
 
 		return PlacementUtils.register(resourceKey.location().toString(), configuredFeature,
-				new RandomBelowYPlacementModifier(maxY, chance), PlacementUtils.FULL_RANGE);
+				new RandomBelowYPlacementModifier(ModConfig.vals.get(type).getB().get(),ModConfig.ORE_VEIN_CONFIG.veinGenerationFrequencies.get(type).get()), PlacementUtils.FULL_RANGE);
 	}
 
 	public static OreVeinConfig CONFIG = ModConfig.ORE_VEIN_CONFIG;
