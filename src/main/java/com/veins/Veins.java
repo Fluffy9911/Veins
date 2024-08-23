@@ -89,7 +89,7 @@ public class Veins {
 		
 IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		ModConfig.buildConfig(bus);
-	
+	ModLoadingContext.get().registerConfig(Type.COMMON, ModConfig.SPEC);
 		// Register the setup method for modloading
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 		// Register the enqueueIMC method for modloading
@@ -97,7 +97,7 @@ IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		// Register the processIMC method for modloading
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
 		VeinsRegistry.PLACEMENT_MODIFIERS.register(bus);	
-		ModLoadingContext.get().registerConfig(Type.COMMON, ModConfig.SPEC);
+		
 	VeinsRegistry.bind(Registry.FEATURE_REGISTRY, VeinsRegistry::registerFeatures);
 		MinecraftForge.EVENT_BUS.register(this);
 		CONFIG = ModConfig.ORE_VEIN_CONFIG;

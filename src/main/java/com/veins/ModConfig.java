@@ -1,7 +1,10 @@
 package com.veins;
 
+import java.util.HashMap;
+
 import org.apache.commons.lang3.tuple.Pair;
 
+import net.minecraft.util.Tuple;
 import net.minecraftforge.common.ForgeConfig;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
@@ -16,12 +19,14 @@ public class ModConfig {
 	public static OreVeinConfig ORE_VEIN_CONFIG;
 	public static ForgeConfigSpec.Builder builder;
 
+	public static HashMap<VeinType,Tuple<ForgeConfigSpec.IntValue,ForgeConfigSpec.IntValue>> vals = new HashMap<>();
+	
 	public static void buildConfig(IEventBus bus) {
 		builder = new Builder();
 		final Pair<OreVeinConfig, ForgeConfigSpec> specPair = builder.configure(OreVeinConfig::new);
 		SPEC = specPair.getRight();
 		ORE_VEIN_CONFIG = specPair.getLeft();
-
+	
 	}
 
 	public static class OreVeinConfig {
@@ -92,7 +97,24 @@ public class ModConfig {
 
 			builder.pop();
 
+			builder.push("veins spawn heights");
+			
+			for(VeinType v : VeinType.values()) {
+				
+				builder.comment("Config Height For: "+v.name());
+				
+				
+				
+				vals.put(v, new Tuple<ForgeConfigSpec.IntValue,ForgeConfigSpec.IntValue>(builder.defineInRange(v.name()+"_min_spawn_y", v.minY, -64, 256),builder.defineInRange(v.name()+"_max_spawn_y", v.maxY, -64, 256)));
+				
+				
+			}
+			builder.pop();
+			
 		}
 	}
-
+public static Double getOrDef(double def,VeinType vt){
+	
+	return def;
+}
 }
