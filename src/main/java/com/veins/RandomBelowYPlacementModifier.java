@@ -22,8 +22,8 @@ public class RandomBelowYPlacementModifier extends PlacementModifier {
 					Codec.DOUBLE.fieldOf("chance").forGetter(RandomBelowYPlacementModifier::getChance))
 			.apply(instance, RandomBelowYPlacementModifier::new));
 
-	private  int yLevel;
-	private  double chance;
+	private int yLevel;
+	private double chance;
 
 	public RandomBelowYPlacementModifier(int yLevel, double chance) {
 		this.yLevel = yLevel;
@@ -40,8 +40,8 @@ public class RandomBelowYPlacementModifier extends PlacementModifier {
 
 	@Override
 	public Stream<BlockPos> getPositions(PlacementContext context, Random random, BlockPos pos) {
-		// Check if the position is below the specified Y-level
-chance = Math.min(1, chance);
+
+		chance = Math.min(1, chance);
 
 		if (pos.getY() < yLevel) {
 			// Random chance to determine if the position should be used

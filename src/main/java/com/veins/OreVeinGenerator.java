@@ -13,7 +13,11 @@ public class OreVeinGenerator {
 	public static List<BlockPos> generateOreVein(BlockPos start, int maxLength, double branchProbability,
 			double decayRate, Random random) {
 		List<BlockPos> positions = new ArrayList<>();
+
 		generateBranch(start, maxLength, branchProbability, decayRate, random, positions, new ArrayList<>(), 0);
+		if (positions.size() < 24) {
+			return new ArrayList<>();
+		}
 		return positions;
 	}
 
@@ -53,8 +57,7 @@ public class OreVeinGenerator {
 	}
 
 	private static boolean withinBounds(BlockPos pos) {
-		// Define bounds to ensure veins are generated within reasonable limits
-		// Adjust if needed based on the world size and desired ore vein size
-		return pos.getY() >= 0 && pos.getY() <= 256;
+
+		return pos.getY() >= -64 && pos.getY() <= 256;
 	}
 }

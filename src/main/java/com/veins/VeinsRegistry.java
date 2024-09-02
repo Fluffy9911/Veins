@@ -1,5 +1,6 @@
 package com.veins;
 
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -10,14 +11,22 @@ import com.veins.features.OreFeature.Configuration;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.features.FeatureUtils;
+import net.minecraft.data.worldgen.features.MiscOverworldFeatures;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
+import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.placement.BiomeFilter;
+import net.minecraft.world.level.levelgen.placement.CountPlacement;
+import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
+import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.placement.PlacementModifier;
+import net.minecraft.world.level.levelgen.placement.RarityFilter;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -92,14 +101,14 @@ public class VeinsRegistry {
 		emerald = registerFeature(r, VeinType.EMERALD, EMERALD_VEIN, 1, 10, 256, 30, 0.01);
 
 		// Set Holder<PlacedFeature> variables
-		cpf = registerPlacedFeature(COPPER_VEIN, copper, 60, 0.01,VeinType.COPPER);
-		ipf = registerPlacedFeature(IRON_VEIN, iron, 60, 0.01,VeinType.IRON);
-		gpf = registerPlacedFeature(GOLD_VEIN, gold, 60, 0.01,VeinType.GOLD);
-		dpf = registerPlacedFeature(DIAMOND_VEIN, diamond, 16, 0.01,VeinType.DIAMOND);
-		cpfCoal = registerPlacedFeature(COAL_VEIN, coal, 128, 0.01,VeinType.COAL);
-		lpf = registerPlacedFeature(LAPIS_VEIN, lapis, 30, 0.01,VeinType.LAPIS);
-		rpf = registerPlacedFeature(REDSTONE_VEIN, redstone, 16, 0.01,VeinType.REDSTONE);
-		epf = registerPlacedFeature(EMERALD_VEIN, emerald, 30, 0.01,VeinType.EMERALD);
+		cpf = registerPlacedFeature(COPPER_VEIN, copper, 60, 0.01, VeinType.COPPER);
+		ipf = registerPlacedFeature(IRON_VEIN, iron, 60, 0.01, VeinType.IRON);
+		gpf = registerPlacedFeature(GOLD_VEIN, gold, 60, 0.01, VeinType.GOLD);
+		dpf = registerPlacedFeature(DIAMOND_VEIN, diamond, 16, 0.01, VeinType.DIAMOND);
+		cpfCoal = registerPlacedFeature(COAL_VEIN, coal, 128, 0.01, VeinType.COAL);
+		lpf = registerPlacedFeature(LAPIS_VEIN, lapis, 30, 0.01, VeinType.LAPIS);
+		rpf = registerPlacedFeature(REDSTONE_VEIN, redstone, 16, 0.01, VeinType.REDSTONE);
+		epf = registerPlacedFeature(EMERALD_VEIN, emerald, 30, 0.01, VeinType.EMERALD);
 	}
 
 	// Helper method to register a feature and its placement
@@ -117,16 +126,28 @@ public class VeinsRegistry {
 
 	// Helper method to register a placed feature
 	private static Holder<PlacedFeature> registerPlacedFeature(ResourceKey<PlacedFeature> resourceKey,
-			Holder<ConfiguredFeature<Configuration, ?>> configuredFeature, int maxY, double chance,VeinType type) {
+			Holder<ConfiguredFeature<Configuration, ?>> configuredFeature, int maxY, double chance, VeinType type) {
 
-		return PlacementUtils.register(resourceKey.location().toString(), configuredFeature,
-				new RandomBelowYPlacementModifier(ModConfig.vals.get(type).getB().get(),ModConfig.ORE_VEIN_CONFIG.veinGenerationFrequencies.get(type).get()), PlacementUtils.FULL_RANGE);
+		return PlacementUtils.register(resourceKey.location().toString(), configuredFeature, placementVein(type));
+	}
+
+	private static List<PlacementModifier> placementVein(VeinType type) {
+		int mh = type.minY;
+		int mx = type.maxY;
+		return orePlacement(
+				RarityFilter.onAverageOnceEvery(ModConfig.ORE_VEIN_CONFIG.veinGenerationFrequencies.get(type).get()),
+				HeightRangePlacement.uniform(VerticalAnchor.aboveBottom(mh), VerticalAnchor.belowTop(mx)));
+
+	}
+
+	private static List<PlacementModifier> orePlacement(PlacementModifier m1, PlacementModifier m2) {
+		return List.of(m1, InSquarePlacement.spread(), m2, BiomeFilter.biome());
 	}
 
 	public static OreVeinConfig CONFIG = ModConfig.ORE_VEIN_CONFIG;
 
 	@SubscribeEvent
-	public static void onBiomeLoading(BiomeLoadingEvent event) { 
+	public static void onBiomeLoading(BiomeLoadingEvent event) {
 		// Check if the biome category is underground
 		if (event.getCategory() == Biome.BiomeCategory.UNDERGROUND) {
 			// Check each ore vein generation setting from the config before adding to the

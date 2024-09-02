@@ -94,30 +94,30 @@ public class Veins {
 	public static void createVein(VeinType type, int veinSize, WorldGenLevel level, BlockPos pos, Random random,
 			double branch, double decay) {
 
-		double bp = branch;
-		double dd = decay;
-		int size = veinSize;
-		if (ModConfig.ORE_VEIN_CONFIG.log.get())
+		if (ModConfig.ORE_VEIN_CONFIG.log.get()) {
 			LogUtils.getLogger().debug("Creating vein of type: {} at position: {}, BranchProb: {}, Decay: {}, Size: {}",
-					type, pos, bp, dd, size);
-		List<BlockPos> vpo = OreVeinGenerator.generateOreVein(pos, size, bp, dd, random);
-		for (Iterator iterator = vpo.iterator(); iterator.hasNext();) {
-			BlockPos blockPos = (BlockPos) iterator.next();
-			if (shouldPlaceOre(type, level, blockPos, random)) {
-
-				if (rchance(random, ModConfig.ORE_VEIN_CONFIG.probOre.get())) {
-
-					level.setBlock(blockPos, getRandomElement(type.ore), Block.UPDATE_ALL_IMMEDIATE);
-				} else if (rchance(random, ModConfig.ORE_VEIN_CONFIG.probSpecial.get())) {
-					level.setBlock(blockPos, getRandomElement(type.rawOreBlock), Block.UPDATE_ALL_IMMEDIATE);
-				} else if (rchance(random, ModConfig.ORE_VEIN_CONFIG.probFiller.get())) {
-					level.setBlock(blockPos, getRandomElement(type.filler), Block.UPDATE_ALL_IMMEDIATE);
-				}
-
-			}
+					type, pos, branch, decay, veinSize);
 		}
 
-		return;
+		List<BlockPos> veinPositions = OreVeinGenerator.generateOreVein(pos, veinSize, branch, decay, random);
+
+		double probOre = ModConfig.ORE_VEIN_CONFIG.probOre.get();
+		double probSpecial = ModConfig.ORE_VEIN_CONFIG.probSpecial.get();
+		double probFiller = ModConfig.ORE_VEIN_CONFIG.probFiller.get();
+
+		for (BlockPos blockPos : veinPositions) {
+			if (shouldPlaceOre(type, level, blockPos, random)) {
+				double randValue = random.nextDouble();
+
+				if (randValue < probOre) {
+					level.setBlock(blockPos, getRandomElement(type.ore), Block.UPDATE_ALL_IMMEDIATE);
+				} else if (randValue < probOre + probSpecial) {
+					level.setBlock(blockPos, getRandomElement(type.rawOreBlock), Block.UPDATE_ALL_IMMEDIATE);
+				} else if (randValue < probOre + probSpecial + probFiller) {
+					level.setBlock(blockPos, getRandomElement(type.filler), Block.UPDATE_ALL_IMMEDIATE);
+				}
+			}
+		}
 	}
 
 	private static boolean shouldPlaceOre(VeinType type, WorldGenLevel level, BlockPos pos, Random random) {
@@ -127,14 +127,15 @@ public class Veins {
 
 		BlockState currentBlock = level.getBlockState(pos);
 		for (BlockState state : type.replace) {
-			if (currentBlock.is(state.getBlock()) ) {
+			if (currentBlock.is(state.getBlock())) {
 				if (ModConfig.ORE_VEIN_CONFIG.log.get())
 					LogUtils.getLogger().debug("Placement conditions met at: {}", pos);
 				return true;
 			}
 		}
 		if (ModConfig.ORE_VEIN_CONFIG.log.get())
-			LogUtils.getLogger().debug("Block at {} cannot be replaced, block at: {} is not one of: {}", pos,currentBlock,type.replace);
+			LogUtils.getLogger().debug("Block at {} cannot be replaced, block at: {} is not one of: {}", pos,
+					currentBlock, type.replace);
 		return false;
 	}
 

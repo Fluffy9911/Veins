@@ -47,14 +47,12 @@ public class OreFeature extends Feature<OreFeature.Configuration> {
 		int mmx = ModConfig.vals.get(veinType).getB().get();
 		veinType.minY = mx;
 		veinType.maxY = mmx;
-		
-			Veins.createVein(veinType, veinSize, level, pos, random, random.nextDouble(bmin, bmax),
+
+		Veins.createVein(veinType, veinSize, level, pos, random, random.nextDouble(bmin, bmax),
 				random.nextDouble(ddmin, ddmax));
-			if (ModConfig.ORE_VEIN_CONFIG.log.get())
-		LogUtils.getLogger().debug("Placed");
-		
-		
-		
+		if (ModConfig.ORE_VEIN_CONFIG.log.get())
+			LogUtils.getLogger().debug("Placed");
+
 		return true;
 	}
 
