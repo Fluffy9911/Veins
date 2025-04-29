@@ -1,0 +1,38 @@
+modLoader = "javafml"
+loaderVersion = "[2,)"
+#issueTrackerURL = ""
+license = "Apache2.0"
+
+[[mods]]
+modId = "veins"
+version = "${version}"
+displayName = "Veins"
+authors = "Fluffy"
+description = '''
+Adds New Large ore veins for every ore
+'''
+#logoFile = "assets/veins/icon.png"
+
+[[dependencies.veins]]
+modId = "neoforge"
+type = "required"
+versionRange = "[${neo},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.veins]]
+modId = "minecraft"
+type = "required"
+versionRange = "[${minecraft},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.veins]]
+modId = "architectury"
+type = "required"
+versionRange = "[${architectury},)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[mixins]]
+config = "veins.mixins.json"

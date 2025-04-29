@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/veins.common.iml" filepath="$PROJECT_DIR$/.idea/modules/common/veins.common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/veins.common.main.iml" filepath="$PROJECT_DIR$/.idea/modules/common/veins.common.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/veins.common.test.iml" filepath="$PROJECT_DIR$/.idea/modules/common/veins.common.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/fabric/veins.fabric.main.iml" filepath="$PROJECT_DIR$/.idea/modules/fabric/veins.fabric.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/fabric/veins.fabric.test.iml" filepath="$PROJECT_DIR$/.idea/modules/fabric/veins.fabric.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/neoforge/veins.neoforge.main.iml" filepath="$PROJECT_DIR$/.idea/modules/neoforge/veins.neoforge.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/neoforge/veins.neoforge.test.iml" filepath="$PROJECT_DIR$/.idea/modules/neoforge/veins.neoforge.test.iml" />
+    </modules>
+  </component>
+</project>

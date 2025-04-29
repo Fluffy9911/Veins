@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "veins",
+  "version": "1.0.0",
+  "name": "Veins",
+  "description": "Adds new Large ore veins to Minecraft",
+  "authors": [
+    "Fluffy"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "Apache-2.0",
+  "icon": "assets/veins/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.fluffy.fabric.VeinsModFabric"
+    ],
+    "client": [
+      "com.fluffy.fabric.client.VeinsFabricClient"
+    ]
+  },
+  "mixins": [
+    "veins.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.14",
+    "minecraft": "~1.20.4",
+    "java": ">=17",
+    "architectury": ">=11.1.17",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}

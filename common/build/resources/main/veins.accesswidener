@@ -1,0 +1,14 @@
+accessWidener v2 named
+
+# Make the main OreVeinifier class accessible
+accessible class net/minecraft/world/level/levelgen/OreVeinifier
+
+# Make the inner VeinType enum accessible
+accessible class net/minecraft/world/level/levelgen/OreVeinifier$VeinType
+
+# Make the fields in VeinType accessible
+accessible field net/minecraft/world/level/levelgen/OreVeinifier$VeinType ore Lnet/minecraft/world/level/block/state/BlockState;
+accessible field net/minecraft/world/level/levelgen/OreVeinifier$VeinType rawOreBlock Lnet/minecraft/world/level/block/state/BlockState;
+accessible field net/minecraft/world/level/levelgen/OreVeinifier$VeinType filler Lnet/minecraft/world/level/block/state/BlockState;
+accessible field net/minecraft/world/level/levelgen/OreVeinifier$VeinType minY I
+accessible field net/minecraft/world/level/levelgen/OreVeinifier$VeinType maxY I

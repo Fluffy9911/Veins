@@ -1,0 +1,2 @@
+/gamemode spectator
+/effect give Player394 minecraft:night_vision infinite 1
